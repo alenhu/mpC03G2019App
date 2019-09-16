@@ -32,7 +32,10 @@
     </div>
   </div> -->
   <div>
-    <button open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfoClick">获取权限</button>
+    <!-- <button open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfoClick">获取权限</button> -->
+    <!-- <button v-if="canIUse" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfoClick">授权登录</button>
+    <view v-else>请升级微信版本</view> -->
+    
     <i-toast id="toast" />
     <div v-show="needBinded">
       <i-panel title="绑定学生">
@@ -42,7 +45,9 @@
       </i-panel>
     </div>
     <div v-show="!needBinded">
-      <p>main</p>
+    <i-card :title="user.wxUser.nickName" full="ture" :thumb="user.wxUser.avatarUrl" :extra="user.role">
+    <view slot="content">{{user.student.cid+'-'+user.student.name}}</view>
+    </i-card>
     </div>
   </div>
 </template>
@@ -55,10 +60,14 @@ const { $Toast } = require('../../../dist/wx/iview/base/index')
 export default {
   data () {
     return {
+      canIUse: mpvue.canIUse('button.open-type.getUserInfo'),
       needBinded: false,
       bindCid: '',
       bindName: '',
-      user: {}
+      user: {
+        student: {},
+        wxUser: {}
+      }
     }
   },
   mounted () {
@@ -73,8 +82,14 @@ export default {
       if (result.user.length === 0) {
         this.needBinded = true
       } else {
-        this.user.student = result.user[0]
+        this.user = result.user[0]
+        // this.$set(this, 'user', result.user[0])
+        console.log('exit', this.user)
       }
+      this.getUserRole()
+      this.$nextTick(() => {
+        this.$forceUpdate()
+      })
     })
   },
 
@@ -85,6 +100,25 @@ export default {
     nameInput (e) {
       this.$set(this, 'bindName', e.target.detail.value)
     },
+    getUserRole () {
+      const db = wx.cloud.database()
+      // console.log('this.user.openid', this.user.openid)
+      db.collection('admins')
+        .where({
+          userOpenId: this.user.openid
+        })
+        .get().then(
+          res => {
+            // console.log('role', res.data)
+            if (res.data && res.data.length) {
+              // this.user.role = res.data[0].role
+              // console.log('role', this.user.role)
+              this.$set(this.user, 'role', res.data[0].role)
+              // console.log('role', this.user.role)
+            }
+          }
+        )
+    },
     // bindViewTap () {
     //   const url = '../logs/main'
     //   if (mpvuePlatform === 'wx') {
@@ -93,21 +127,21 @@ export default {
     //     mpvue.navigateTo({ url })
     //   }
     // },
-    getUserInfoClick () {
-    // console.log('click事件首先触发')
-    },
-    bindGetUserInfo (e) {
-    // console.log('回调事件后触发')
-    // const self = this
-      if (e.mp.detail.userInfo) {
-        console.log('用户按了允许授权按钮')
-        let { encryptedData, userInfo, iv } = e.mp.detail
-        console.log('encryptedData', encryptedData, userInfo, iv)
-      } else {
-        // 用户按了拒绝按钮
-        console.log('用户按了拒绝按钮')
-      }
-    },
+    // getUserInfoClick () {
+    // // console.log('click事件首先触发')
+    // },
+    // bindGetUserInfo (e) {
+    // // console.log('回调事件后触发')
+    // // const self = this
+    //   if (e.mp.detail.userInfo) {
+    //     console.log('用户按了允许授权按钮')
+    //     let { encryptedData, userInfo, iv } = e.mp.detail
+    //     console.log('encryptedData', encryptedData, userInfo, iv)
+    //   } else {
+    //     // 用户按了拒绝按钮
+    //     console.log('用户按了拒绝按钮')
+    //   }
+    // },
     getStudentByNameAndCid (name, cid) {
       const db = wx.cloud.database()
       return db.collection('students')
@@ -119,10 +153,20 @@ export default {
     bindStudentToUser (stu) {
       // const that = this
       this.user.student = stu
-      console.log('result', this.user)
+      // this.$set(this.user, 'student', stu)
+      // this.$set(this.user.student, 'name', stu.name)
+      // this.$forceUpdate()
+      // this.user.student.name = null
+      // this.user.student.name = stu.name
       const db = wx.cloud.database()
       this.user.date = new Date()
-      // this.user.location = new db.Geo.Point(23, 113)
+      this.user.wxUser = this.globalData.userInfo
+      // this.$set(this.user, 'wxUser', this.globalData.userInfo)
+      // this.$set(this.user.wxUser, 'avatarUrl', this.globalData.userInfo.avatarUrl)
+      // this.$forceUpdate()
+      // this.user.wxUser.avatarUrl = null
+      // this.user.wxUser.avatarUrl = this.globalData.userInfo.avatarUrl
+      // this.$forceUpdate()
       db.collection('users')
         .add({
           data: this.user

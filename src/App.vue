@@ -1,6 +1,11 @@
 
 <script>
 export default {
+  data () {
+    return {
+      userInfo: {}
+    }
+  },
   created () {
     // 调用API从本地缓存中获取数据
     /*
@@ -61,12 +66,12 @@ export default {
       // 获取用户信息
       mpvue.getUserInfo({
         success: function (res) {
-          console.log(res)
-          that.data.userInfo = res.userInfo
-          console.log('that.data.userInfo', that.data.userInfo)
-          that.setData({
-            userInfo: that.data.userInfo
-          })
+          // console.log(res)
+          that.globalData.userInfo = res.userInfo
+          // console.log('that.data.userInfo', that.data.userInfo)
+          // that.$set(that,
+          //   'userInfo', that.data.userInfo
+          // )
         },
         fail: function (res) {
           console.log('kkkkkkkkkkkk', res)

@@ -2,8 +2,8 @@
   "pages": [
     "pages/index/main",
     "pages/logs/main",
-    "pages/counter/main",
-    "pages/bindStudent/main"
+    "pages/userManage/main",
+    "pages/postNotice/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

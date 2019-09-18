@@ -1,10 +1,10 @@
 {
   "usingComponents": {
-    "i-button": "../../iview/button/index",
-    "i-input": "../../iview/input/index",
-    "i-toast": "../../iview/toast/index",
-    "i-card": "../../iview/card/index",
-    "i-row": "../../iview/row/index",
-    "i-col": "../../iview/col/index"
+    "i-button": "/static/iview/button/index",
+    "i-input": "/static/iview/input/index",
+    "i-toast": "/static/iview/toast/index",
+    "i-card": "/static/iview/card/index",
+    "i-row": "/static/iview/row/index",
+    "i-col": "/static/iview/col/index"
   }
 }

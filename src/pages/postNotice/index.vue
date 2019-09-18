@@ -1,11 +1,12 @@
 <template>
-  <div class="counter-warp">
-    <p>Vuex counter：{{ count }}</p>
-    <p>
-      <button @click="increment">+</button>
-      <button @click="decrement">-</button>
-    </p>
-  </div>
+<div class="poseNotice">
+    <i-panel title="发布通知">
+    <!-- <i-input value="{{ value1 }}" title="收货人" autofocus placeholder="名字" />
+    <i-input value="{{ value2 }}" type="number" title="联系电话" placeholder="请输入手机号" />
+    <i-input value="{{ value3 }}" type="textarea" title="详细地址" placeholder="请输入详细地址(最多50字)" maxlength="50" />
+    <i-input value="{{ value4 }}" title="用户信息" disabled /> -->
+    </i-panel>
+</div>
 </template>
 
 <script>

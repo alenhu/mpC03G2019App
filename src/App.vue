@@ -1,4 +1,8 @@
-
+<template>
+<div>
+  <button v-if="buttonVisible" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfoClick">获取权限</button>
+</div>
+</template>
 <script>
 export default {
   data () {
@@ -15,7 +19,6 @@ export default {
      * 百度：mpvue === swan, mpvuePlatform === 'swan'
      * 支付宝(蚂蚁)：mpvue === my, mpvuePlatform === 'my'
      */
-
     let logs
     if (mpvuePlatform === 'my') {
       logs = mpvue.getStorageSync({key: 'logs'}).data || []
@@ -30,7 +33,7 @@ export default {
       mpvue.setStorageSync('logs', logs)
     }
     this.checkSession()
-    this.getUserInfo()
+    // this.getUserInfo()
     // mpvue.cloud.callFunction({
     //   name: 'sum',
     //   data: {
@@ -62,11 +65,10 @@ export default {
     },
     getUserInfo () {
       var that = this
-
       // 获取用户信息
       mpvue.getUserInfo({
         success: function (res) {
-          // console.log(res)
+          console.log(res)
           that.globalData.userInfo = res.userInfo
           // console.log('that.data.userInfo', that.data.userInfo)
           // that.$set(that,

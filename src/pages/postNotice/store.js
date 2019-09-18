@@ -7,7 +7,25 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    count: 0
+    count: 0,
+    ntyps: [{
+      id: 1,
+      name: '一般通知'
+    }, {
+      id: 2,
+      name: '确认通知'
+    }, {
+      id: 3,
+      name: '回复通知'
+    }, {
+      id: 4,
+      name: '上传通知'
+    }]
+  },
+  getters: {
+    getNoticeTypes: function (state) {
+      return state.ntyps
+    }
   },
   mutations: {
     increment: (state) => {

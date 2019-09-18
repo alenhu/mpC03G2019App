@@ -21,10 +21,9 @@
       <i-button i-class="adminbtn" v-if="buserManage" type="primary" size="small" inline="true" @click="handleUserManage">用户管理</i-button>
     </view>
     </i-card>
-     <!-- <i-row>
-      <i-col span="5" i-class="col-class"><i-button type="ghost" size="small" inline="true" @click="handleClick">发布</i-button></i-col>
-      <i-col span="5" i-class="col-class"><i-button type="ghost" size="small" inline="true" @click="handleClick">用户管理</i-button></i-col>
-     </i-row> -->
+    <div>
+
+    </div>
     </view>
   </div>
 </template>
@@ -81,9 +80,9 @@ export default {
         // this.$set(this, 'user', result.user[0])
         // console.log('exit', this.user)
       }
-      // this.$nextTick(() => {
-      //   this.$forceUpdate()
-      // })
+      this.$nextTick(() => {
+        this.getNoReaderNotices()
+      })
     })
   },
 
@@ -112,10 +111,30 @@ export default {
             } else {
               this.user.role = 'user'
             }
+            getApp().globalData.user = this.user
           }
         ).catch((err) => {
           console.log('err', err)
           this.user.role = 'user'
+          getApp().globalData.user = this.user
+        })
+    },
+    getNoReaderNotices () {
+      const readed = this.user.readed || []
+      const db = wx.cloud.database()
+      db.collection('notices')
+        .where({
+          _id: {$nin: readed}
+        })
+        .orderBy('ctime', 'desc')
+        .get().then((res) => {
+          console.log(res.data)
+        }).catch((err) => {
+          console.log(err)
+          $Toast({
+            content: '读取新通知失败,请重试',
+            type: 'error'
+          })
         })
     },
     // bindViewTap () {

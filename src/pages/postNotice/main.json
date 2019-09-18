@@ -6,8 +6,6 @@
     "i-toast": "/static/iview/toast/index",
     "i-card": "/static/iview/card/index",
     "i-row": "/static/iview/row/index",
-    "i-index": "/static/iview/index/index",
-    "i-index-item": "/static/iview/index-item/index",
     "i-col": "/static/iview/col/index"
   }
 }

@@ -1,8 +1,3 @@
-<template>
-<div>
-  <button v-if="buttonVisible" open-type="getUserInfo" @getuserinfo="bindGetUserInfo" @click="getUserInfoClick">获取权限</button>
-</div>
-</template>
 <script>
 export default {
   data () {

@@ -24,7 +24,10 @@
     "lint": "eslint --ext .js,.vue src"
   },
   "dependencies": {
+    "eslint-plugin-vue": "^5.2.3",
+    "lodash.pick": "^4.4.0",
     "mpvue": "^2.0.0",
+    "mpvue-picker": "^2.1.6",
     "vuex": "^3.0.1",
     "wx-server-sdk": "^1.1.0"
   },

@@ -8,4 +8,5 @@ wx.cloud.init({
 })
 const app = new Vue(App)
 app.$mount()
+console.log('app e')
 Vue.prototype.globalData = getApp().globalData

@@ -3,7 +3,8 @@
     "pages/index/main",
     "pages/logs/main",
     "pages/userManage/main",
-    "pages/postNotice/main"
+    "pages/postNotice/main",
+    "pages/noticeDetail/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -36,7 +36,7 @@
       <view class='box'>
        <scroll-view scroll-y='true' :style="height"  @scrolltolower='lower'> 
            <view class="viewcard" v-for="(item, i) in noticesList.notices" v-bind:key="item._id">
-             <view class="cdetail"><a @click="handleDetail($event,item._id)">详情</a></view>
+             <view class="cdetail"><a @click="handleDetail($event,item)">详情</a></view>
               <i-card :title="item.title" :thumb="'/static/images/'+item.type+'.png'"  >
                 <view slot="content" ><cardTitle :text="item.content" :length="16" ></cardTitle></view>
               </i-card>
@@ -142,8 +142,10 @@ export default {
     nameInput (e) {
       this.$set(this, 'bindName', e.target.detail.value)
     },
-    handleDetail (e, id) {
-      console.log('handle Detail', e, id)
+    handleDetail (e, item) {
+      console.log('handle Detail', e, item)
+      const url = `../noticeDetail/main?notice=${JSON.stringify(item)}`
+      mpvue.navigateTo({ url })
     },
     lower () {
       // console.log('lower')

@@ -14,16 +14,38 @@
       </i-panel>
     </div>
     <view id="divmain" v-show="!needBinded">
-    <i-card :i-class="user.role" :title="user.wxUser.nickName" full="ture" :thumb="user.wxUser.avatarUrl||defaultAvatarUrl" :extra="user.role">
+   
+    <i-card id='topcard' :i-class="user.role" :title="user.wxUser.nickName" full="ture" :thumb="user.wxUser.avatarUrl||defaultAvatarUrl" :extra="user.role">
     <view slot="content">{{user.student.cid+'-'+user.student.name}}
       <i-button i-class="adminbtn"  type="primary" size="small" inline="true" @click="handleHistoryPose">历史</i-button> 
       <i-button i-class="adminbtn" v-if="bpose" type="primary" size="small" inline="true" @click="handlePose">发布</i-button>
       <i-button i-class="adminbtn" v-if="buserManage" type="primary" size="small" inline="true" @click="handleUserManage">用户管理</i-button>
     </view>
     </i-card>
-    <div>
-
-    </div>
+            
+    <!-- <div>
+      <i-cell-group>
+        <i-cell v-for="(item, i) in noticesList.notices" v-bind:key="item.id">
+          <i-card :title="item.title" thumb="https://i.loli.net/2017/08/21/599a521472424.jpg">
+            <view slot="content">{{i}}内容不错</view>
+            <view slot="footer">尾部内容</view>
+          </i-card>
+        </i-cell> 
+      </i-cell-group>
+    </div> -->
+      <view class='box'>
+       <scroll-view scroll-y='true' :style="height"  @scrolltolower='lower'> 
+           <view class="viewcard" v-for="(item, i) in noticesList.notices" v-bind:key="item._id">
+             <view class="cdetail"><a @click="handleDetail($event,item._id)">详情</a></view>
+              <i-card :title="item.title" :thumb="'/static/images/'+item.type+'.png'"  >
+                <view slot="content" ><cardTitle :text="item.content" :length="16" ></cardTitle></view>
+              </i-card>
+           </view>
+           <view v-show="loadShow">
+              <i-load-more :tip="loadTip"/>
+           </view>
+        </scroll-view>
+      </view> 
     </view>
   </div>
 </template>
@@ -31,7 +53,7 @@
 <script>
 import { $Toast } from '../../../static/iview/base/index'
 // const { $Toast } = require('../../../dist/wx/iview/base/index')
-// import card from '@/components/card'
+import cardTitle from '@/components/cardTitle'
 
 export default {
   data () {
@@ -45,12 +67,31 @@ export default {
         wxUser: {},
         role: ''
       },
+      height: 'height: 400px;',
+      list: [1, 2, 3, 4, 5],
       pose: 'pose',
       userManage: 'userManage',
       permission: [],
+      loadShow: true,
+      loadTip: '加载中',
+      loading: false,
+      noticesList: {
+        pageSize: 3,
+        curIndex: 0,
+        prePageLast: [new Date()],
+        notices: []
+      },
       defaultAvatarUrl: 'data:image/png;base64,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'
     }
   },
+  components: {
+    cardTitle
+  },
+  // watch:{
+  //   aboutContent(){
+
+  //   }
+  // }
   computed: {
     bpose: function () {
       return this.permission.includes(this.pose)
@@ -81,9 +122,17 @@ export default {
         // console.log('exit', this.user)
       }
       this.$nextTick(() => {
-        this.getNoReaderNotices()
+        // this.getNoReaderNotices()
+        this.getNoReaderNoticesPage(this.noticesList, this.noticesList.curIndex)
       })
     })
+    const query = mpvue.createSelectorQuery()
+    const height = mpvue.getSystemInfoSync().windowHeight
+    query.select('#topcard').boundingClientRect(function (rect) {
+      // console.log(rect.height)
+      that.height = `height:${height - rect.height - 10}px`
+      // console.log(that.height)
+    }).exec()
   },
 
   methods: {
@@ -92,6 +141,23 @@ export default {
     },
     nameInput (e) {
       this.$set(this, 'bindName', e.target.detail.value)
+    },
+    handleDetail (e, id) {
+      console.log('handle Detail', e, id)
+    },
+    lower () {
+      // console.log('lower')
+      this.loadShow = true
+      // this.loading = true
+      this.getNoReaderNoticesPage(this.noticesList, this.noticesList.curIndex)
+      // this.loadShow = false
+      // this.$set(this, 'loadShow', false)
+      // this.$nextTick(() => {
+      //   this.loadShow = false
+      //   this.loading = false
+      //   this.loadTip = '没有数据'
+      //   console.log('lower对对对', this.noticesList.curIndex, this.loadShow = false)
+      // })
     },
     getUserRole () {
       const db = wx.cloud.database()
@@ -118,6 +184,59 @@ export default {
           this.user.role = 'user'
           getApp().globalData.user = this.user
         })
+    },
+    getNoReaderNoticesPage (plist, index) {
+      const readed = this.user.readed || []
+      const last = plist.prePageLast[index]
+      if (last) {
+        const db = wx.cloud.database()
+        const _ = db.command
+        db.collection('notices')
+          .where(_.and(
+            {ctime: _.lt(last)},
+            {_id: _.nin(readed)})
+          )
+          .orderBy('ctime', 'desc')
+          .limit(plist.pageSize).get().then((res) => {
+            // console.log(res.data)
+            if (res.data.length) {
+              plist.prePageLast[index + 1] = res.data[res.data.length - 1].ctime
+              // console.log('plist.prePageLast', plist.prePageLast)
+              plist.curIndex++
+              plist.notices = plist.notices.concat(res.data)
+            } else {
+              this.loadShow = false
+            }
+          }).catch((err) => {
+            console.log(err)
+            $Toast({
+              content: '读取新通知失败,请重试',
+              type: 'error'
+            })
+          })
+      } else {
+        const db = wx.cloud.database()
+        const _ = db.command
+        db.collection('notices')
+          .where(_.and(
+            {_id: _.nin(readed)})
+          )
+          .orderBy('ctime', 'desc')
+          .skip(plist.pageSize * index)
+          .limit(plist.pageSize).get().then((res) => {
+            if (res.data.length) {
+              plist.prePageLast[index + 1] = res.data[res.data.length - 1].ctime
+              plist.notices = res.data
+            }
+            // console.log('plist.prePageLast', plist.prePageLast)
+          }).catch((err) => {
+            console.log(err)
+            $Toast({
+              content: '读取新通知失败,请重试',
+              type: 'error'
+            })
+          })
+      }
     },
     getNoReaderNotices () {
       const readed = this.user.readed || []
@@ -351,6 +470,12 @@ export default {
 .user .i-card-header-extra {
   background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADYklEQVRYR9VXS24aQRB91TO24lXICYJPEHICE8lG2QXHBzCcIHgRKzJIxhJYUbKwcwLjAyTGuwgsBZ8g3CDkBMErR4bpimpmGmN+3RMWUXqDhpnuevWq6lU1IeF6+Y7T2te7DM4ClIm2c5dAHdbqsn1M3SRHUpKPN8tBiQiHBKTm7WOg1K55n1zPdQaQKw+bIHoV+sv4CUITmiNvFWXAyBPhacxIs1Xzt11AOAEQzxXhJGIb53crqtSpUn/cQLbKqZWhrhLwRv7XjL2rundqA2EFIDEPfP09pJ35slX384sO3aoEpwKCgT60emHLCSuAXCWoAjgU2gcrKjPp+SSYkImB7sbhOGrVPNk/d9kBmNgzzlt1r2CjVN7fs8DX7ZqfXQrAVjnoiTeuMRVjo5xh9Fp1b30pALlKIJn+DICVTmPIAJCwteteejkAM0Lw8cttw6dHpb3tqBJOLjg10L9P9nfWivKcKwcNEHZdktaeAyYJgf7AV+uShAKAgQ0iNGJdKBBw/fb1WiEuxx+xWFlZswIIy9ALs/oxwCOB+fD5tgDiSIqZuvs7ayEYI1jMuPEClfn6nnpLhSA8tMJ5QF8YlbvzveIsIVodBmcAhTrhmrRWBgz6UVxDMUSfwB0gajzMSIOQH/WIBCXrDMAwwawbUTiml9DOQNVFgs3uRABkkyTZ6lCXEHkd5wD3QNRVQ9WwxXwSdmIALkqY5Jv/C8BmhbMKegPgDAMpAoU6z4wuEfckKTXU9VWNOq4sODEghgnBoTFoO5zBHYZ35AJkIYCtA85ABSeThhl8LTOgASLzIYFkTJOeMVoCBNrbWzQTzAWwdTAskKKzkREZw5irg1WvOW8mMBXCDJkdR6XKmovtYz9USqcqeKh87qpmDp8NRG23atS0AhgfwURYwCprG6vm5UQYQtIdYUPU0zSz8e+nQmCmmTC7tXr+t8aNkbhyvsXPU91xGkA56IfxS6DntqowfURYaNe8J3MZiGP3K/J+fuLYDE6+H0/oVs174PQUA7lKwP8UgBlCo5arirMyNwkDkYjpC2nVs2bEGQyMDx9R748un/LrdvGM5gNOy+X14T1yuhRnCpHowKK+n4SBuFfcEKmCkw6Mi8nKXZAnoiyLN0zp+8vnYgjR5ZV7xNRj5s4i9fwDUUbTMLgPM90AAAAASUVORK5CYII="); 
 }
+.cdetail {
+  position: absolute;
+  right: 60rpx;
+  z-index: 1;
+  margin-top: 5px;
+}
 /* .userinfo {
   display: flex;
   flex-direction: column;
@@ -401,4 +526,15 @@ export default {
   height:1rem;
   background-color:green;
 } */
+</style>
+<style scoped>
+scroll-view {
+  margin-top: 10px;
+
+}
+.viewcard {
+  margin-bottom: 10px;
+
+}
+
 </style>

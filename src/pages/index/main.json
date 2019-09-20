@@ -5,6 +5,9 @@
     "i-toast": "/static/iview/toast/index",
     "i-card": "/static/iview/card/index",
     "i-row": "/static/iview/row/index",
-    "i-col": "/static/iview/col/index"
+    "i-col": "/static/iview/col/index",
+    "i-cell-group": "/static/iview/cell-group/index",
+    "i-cell": "/static/iview/cell/index",
+    "i-load-more": "/static/iview/load-more/index"
   }
 }

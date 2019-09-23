@@ -98,6 +98,13 @@ export default {
     },
     buserManage: function () {
       return this.permission.includes(this.userManage)
+    },
+    icompute () {
+      return (i) => {
+        // console.log(i)
+        this.$forceUpdate()
+        return i + 10
+      }
     }
   },
   mounted () {
@@ -136,6 +143,10 @@ export default {
   },
 
   methods: {
+    mcompute (i) {
+      // console.log(i)
+      return i + 10
+    },
     cidInput (e) {
       this.$set(this, 'bindCid', e.target.detail.value)
     },

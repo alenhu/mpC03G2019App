@@ -51,18 +51,18 @@
       >内容:</i-col>
     </i-row>
     <i-row>
+      <view class="section">
       <i-col
         span="24"
         i-class="col-class"
       >
-        <i-input
-          :value="noticeContent"
-          mode="wrapped"
-          type="textarea"
-          placeholder="内容"
-          @change="contentInput"
-        />
+      <scroll-view scroll-y style="height: 200px;">
+        <textarea class="contentArea"
+         placeholder="内容"
+         auto-focus
+        /></scroll-view>
       </i-col>
+      </view>
     </i-row>
     <i-row>
       <i-col
@@ -186,6 +186,9 @@ export default {
   padding: 5px 10px;
   color: blue;
   border: 1px solid blue;
+}
+.contentArea {
+  left: 12px;
 }
 .noticeTypeTitle {
   margin-top: 5px;

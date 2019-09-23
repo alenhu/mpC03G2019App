@@ -8,7 +8,20 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     notice: {},
-    reader: {}
+    reader: {},
+    ntyps: [{
+      value: 'genralNotice',
+      label: '一般通知'
+    }, {
+      value: 'confirmNotice',
+      label: '确认通知'
+    }, {
+      value: 'replyNotice',
+      label: '回复通知'
+    }, {
+      value: 'uploadNotice',
+      label: '上传通知'
+    }]
   },
   getters: {
     getNoticeType: function (state) {
@@ -19,6 +32,10 @@ const store = new Vuex.Store({
     },
     getNoticeContent: function (state) {
       return state.notice.content
+    },
+    checkNoticeType: (state) => (ptype) => {
+      console.log(ptype === state.notice.type)
+      return ptype === state.notice.type
     }
   },
   mutations: {

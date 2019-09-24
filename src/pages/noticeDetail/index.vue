@@ -35,7 +35,8 @@ export default {
   },
   data () {
     return {
-      cresult: false
+      cresult: false,
+      carrayKey: ''
     }
   },
   computed: {
@@ -49,6 +50,9 @@ export default {
     noticeType: function () {
       return store.getters['getNoticeType']
     },
+    noticeId: function () {
+      return store.getters['getNoticeId']
+    },
     cbuttonLable: function () {
       if (this.cresult) {
         return '取消确认'
@@ -59,8 +63,16 @@ export default {
   },
   onLoad (options) {
     // console.log('options', options)
-    store.dispatch('setReader', {openid: this.globalData.user.openid, nickName: this.globalData.user.wxUser.nickName})
+    store.dispatch('setReader', this.globalData.user)
     store.dispatch('setNotice', JSON.parse(options.notice))
+  },
+  mounted () {
+    if (store.getters['isGenralNotice'](this.noticeType)) {
+      store.dispatch('setNoticeReaded', this.noticeId)
+    }
+    // this.carrayKey = `${this.noticeType}Array`
+    // this.cresult = this.cresult[this.carrayKey] ? this.globalData.userthis.globalData.user[this.carrayKey][this.noticeId] : false
+    // console.log(this.carrayKey, this.cresult)
   },
 
   methods: {
